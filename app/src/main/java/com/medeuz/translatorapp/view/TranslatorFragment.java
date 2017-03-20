@@ -4,45 +4,81 @@ package com.medeuz.translatorapp.view;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.medeuz.translatorapp.R;
 import com.medeuz.translatorapp.presenter.ITranslatorPresenter;
 import com.medeuz.translatorapp.presenter.TranslatorPresenterImpl;
 
-public class TranslatorFragment extends Fragment implements ITranslatorView, TextView.OnEditorActionListener, View.OnKeyListener {
+public class TranslatorFragment extends Fragment implements ITranslatorView {
 
     public static final String TAG = "TranslatorFragment";
 
     /**
      * Presenter of Translator screen, see ITranslatorPresenter interface
      */
-    private ITranslatorPresenter translatorPresenter;
+    private ITranslatorPresenter mTranslatorPresenter;
+
+    /**
+     * EditText input for text that would be translated
+     */
+    private EditText mTranslateInputEt;
+
+    /**
+     * Button for translation of text in mTranslateInputEt
+     */
+    private ImageButton mTranslateBtn;
+
+    /**
+     * Button for pronouncing of text in mTranslateInputEt
+     */
+    private ImageButton mPronounceBtn;
+
+    /**
+     * Button to clear EditText mTranslateInputEt
+     */
+    private ImageButton mClearTextBtn;
+
+    /**
+     * TextView for translated text from mTranslateInputEt
+     */
+    private TextView mTranslatedTextTv;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_translator, container, false);
 
-        EditText editText = (EditText) root.findViewById(R.id.translate_input_et);
-        editText.setOnEditorActionListener(this);
-        editText.setOnKeyListener(this);
+        mTranslateInputEt = (EditText) root.findViewById(R.id.translate_input_et);
+        mTranslateBtn = (ImageButton) root.findViewById(R.id.translate_btn);
+        mPronounceBtn = (ImageButton) root.findViewById(R.id.pronounce_btn);
+        mClearTextBtn = (ImageButton) root.findViewById(R.id.clear_input_txt_btn);
+        mTranslatedTextTv = (TextView) root.findViewById(R.id.translated_text_tv);
 
-        translatorPresenter = new TranslatorPresenterImpl(this);
-        //translatorPresenter.getTranslate("ru-en", "Привет, меня зовут Стас. Рад знакомству!");
+        mTranslatorPresenter = new TranslatorPresenterImpl(getActivity(), this);
+
+        mTranslateBtn.setOnClickListener(view ->
+                mTranslatorPresenter.getTranslate("ru-en", mTranslateInputEt.getText().toString())
+        );
+        mPronounceBtn.setOnClickListener(view ->
+                mTranslatorPresenter.pronounceText("ru", mTranslateInputEt.getText().toString())
+        );
+        mClearTextBtn.setOnClickListener(view ->
+                mTranslateInputEt.setText("")
+        );
 
         return root;
     }
 
     @Override
     public void showTranslate(String originalText, String translatedText) {
-
+        mTranslatedTextTv.setText(translatedText);
     }
 
     @Override
@@ -57,22 +93,7 @@ public class TranslatorFragment extends Fragment implements ITranslatorView, Tex
 
     @Override
     public void showError(Throwable e) {
-
+        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-        if (keyEvent.getAction() == KeyEvent.ACTION_DOWN)
-            translatorPresenter.getTranslate("ru-en", textView.getText().toString());
-        return false;
-    }
-
-    @Override
-    public boolean onKey(View view, int i, KeyEvent keyEvent) {
-        if (KeyEvent.ACTION_UP == keyEvent.getAction())
-            if (i == 66) {
-                translatorPresenter.getTranslate("ru-en", ((TextView) view).getText().toString());
-            }
-        return false;
-    }
 }

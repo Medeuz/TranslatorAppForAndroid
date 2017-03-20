@@ -1,9 +1,11 @@
 package com.medeuz.translatorapp.presenter;
 
 
+import android.content.Context;
 import android.util.Log;
 
 import com.medeuz.translatorapp.entity.Translate;
+import com.medeuz.translatorapp.model.TranslatorModel;
 import com.medeuz.translatorapp.network.ServiceGenerator;
 import com.medeuz.translatorapp.network.YaTranslateService;
 import com.medeuz.translatorapp.view.ITranslatorView;
@@ -27,8 +29,14 @@ public class TranslatorPresenterImpl implements ITranslatorPresenter {
      */
     private ITranslatorView mView;
 
-    public TranslatorPresenterImpl(ITranslatorView view) {
+    /**
+     * Model of translate screen
+     */
+    private TranslatorModel mModel;
+
+    public TranslatorPresenterImpl(Context context, ITranslatorView view) {
         this.mView = view;
+        this.mModel = new TranslatorModel(context);
     }
 
     @Override
@@ -62,6 +70,11 @@ public class TranslatorPresenterImpl implements ITranslatorPresenter {
                         Log.d(TAG, translate.getTranslatation().get(0));
                     }
                 });
+    }
+
+    @Override
+    public void pronounceText(String countryCode, String text) {
+        mModel.vocalizeText(countryCode, text);
     }
 
 }
