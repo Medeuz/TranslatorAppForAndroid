@@ -1,6 +1,7 @@
 package com.medeuz.translatorapp.view;
 
 
+import android.app.ActionBar;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -50,6 +51,8 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
      */
     private TextView mTranslatedTextTv;
 
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,6 +66,13 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
 
         mTranslatorPresenter = new TranslatorPresenterImpl(getActivity(), this);
 
+        initActionBar();
+        setListeners();
+
+        return root;
+    }
+
+    private void setListeners() {
         mTranslateBtn.setOnClickListener(view ->
                 mTranslatorPresenter.getTranslate("ru-en", mTranslateInputEt.getText().toString())
         );
@@ -72,8 +82,17 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
         mClearTextBtn.setOnClickListener(view ->
                 mTranslateInputEt.setText("")
         );
+    }
 
-        return root;
+    /**
+     * Sets ActionBar custom view with button to change languages
+     */
+    private void initActionBar() {
+        ActionBar actionBar = getActivity().getActionBar();
+        if (actionBar != null) {
+            actionBar.setCustomView(R.layout.translator_toolbar);
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        }
     }
 
     @Override
