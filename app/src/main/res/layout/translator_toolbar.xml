@@ -25,7 +25,7 @@
         android:src="@drawable/ic_swap_horiz_black_48dp" />
 
     <TextView
-        android:id="@+id/_translate_to_language_tv"
+        android:id="@+id/translate_to_language_tv"
         android:text="@string/english"
         android:gravity="center"
         android:layout_weight="2"

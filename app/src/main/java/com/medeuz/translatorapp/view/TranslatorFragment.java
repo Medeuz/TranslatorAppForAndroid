@@ -17,6 +17,10 @@ import com.medeuz.translatorapp.R;
 import com.medeuz.translatorapp.presenter.ITranslatorPresenter;
 import com.medeuz.translatorapp.presenter.TranslatorPresenterImpl;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 public class TranslatorFragment extends Fragment implements ITranslatorView {
 
     public static final String TAG = "TranslatorFragment";
@@ -27,30 +31,53 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
     private ITranslatorPresenter mTranslatorPresenter;
 
     /**
+     * Unbinder object for ButterKnife unbinding
+     */
+    private Unbinder mUnbinder;
+    /**
      * EditText input for text that would be translated
      */
-    private EditText mTranslateInputEt;
+    @BindView(R.id.translate_input_et)
+    EditText mTranslateInputEt;
 
     /**
      * Button for translation of text in mTranslateInputEt
      */
-    private ImageButton mTranslateBtn;
+    @BindView(R.id.translate_btn)
+    ImageButton mTranslateBtn;
 
     /**
      * Button for pronouncing of text in mTranslateInputEt
      */
-    private ImageButton mPronounceBtn;
+    @BindView(R.id.pronounce_btn)
+    ImageButton mPronounceBtn;
 
     /**
      * Button to clear EditText mTranslateInputEt
      */
-    private ImageButton mClearTextBtn;
+    @BindView(R.id.clear_input_txt_btn)
+    ImageButton mClearTextBtn;
 
     /**
      * TextView for translated text from mTranslateInputEt
      */
-    private TextView mTranslatedTextTv;
+    @BindView(R.id.translated_text_tv)
+    TextView mTranslatedTextTv;
 
+    /**
+     * ImageButton for language translation change in ActionBar
+     */
+    private ImageButton mActionBarLanguageBtn;
+
+    /**
+     * TextView for language name for translation
+     */
+    private TextView mActionBarFromLangTv;
+
+    /**
+     * TextView for language name for translated result
+     */
+    private TextView mActionBarToLangTv;
 
 
     @Nullable
@@ -58,18 +85,19 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_translator, container, false);
 
-        mTranslateInputEt = (EditText) root.findViewById(R.id.translate_input_et);
-        mTranslateBtn = (ImageButton) root.findViewById(R.id.translate_btn);
-        mPronounceBtn = (ImageButton) root.findViewById(R.id.pronounce_btn);
-        mClearTextBtn = (ImageButton) root.findViewById(R.id.clear_input_txt_btn);
-        mTranslatedTextTv = (TextView) root.findViewById(R.id.translated_text_tv);
-
         mTranslatorPresenter = new TranslatorPresenterImpl(getActivity(), this);
 
+        mUnbinder = ButterKnife.bind(this, root);
         initActionBar();
         setListeners();
 
         return root;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUnbinder.unbind();
     }
 
     private void setListeners() {
@@ -80,8 +108,16 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
                 mTranslatorPresenter.pronounceText("ru", mTranslateInputEt.getText().toString())
         );
         mClearTextBtn.setOnClickListener(view ->
-                mTranslateInputEt.setText("")
+                {
+                    mTranslateInputEt.setText("");
+                    mTranslatedTextTv.setText("");
+                }
         );
+        mActionBarLanguageBtn.setOnClickListener(view -> {
+            CharSequence temp = mActionBarFromLangTv.getText();
+            mActionBarFromLangTv.setText(mActionBarToLangTv.getText());
+            mActionBarToLangTv.setText(temp);
+        });
     }
 
     /**
@@ -92,6 +128,15 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
         if (actionBar != null) {
             actionBar.setCustomView(R.layout.translator_toolbar);
             actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+            mActionBarLanguageBtn
+                    = (ImageButton) actionBar.getCustomView()
+                    .findViewById(R.id.lang_change_btn);
+            mActionBarFromLangTv
+                    = (TextView) actionBar.getCustomView()
+                    .findViewById(R.id.translate_from_language_tv);
+            mActionBarToLangTv
+                    = (TextView) actionBar.getCustomView()
+                    .findViewById(R.id.translate_to_language_tv);
         }
     }
 

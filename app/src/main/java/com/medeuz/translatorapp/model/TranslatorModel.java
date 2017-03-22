@@ -5,6 +5,8 @@ import android.content.Context;
 import ru.yandex.speechkit.SpeechKit;
 import ru.yandex.speechkit.Vocalizer;
 
+import static com.medeuz.translatorapp.utils.Utils.CountryCode;
+
 public class TranslatorModel {
 
     private static final String TAG = "TranslatorModel";
@@ -13,6 +15,16 @@ public class TranslatorModel {
      * API Key for Yandex Speech kit
      */
     private static final String SPEECH_API_KEY = "ec5c14c0-c5f0-405d-8a82-b63c862807e0";
+
+    /**
+     * country code of from what language we translate
+     */
+    private CountryCode mFromCountryCode;
+
+    /**
+     * country code of to what language we translate
+     */
+    private CountryCode mToCountryCode;
 
     /**
      * Vocalizer object of Yandex SpeechKit to pronounce text
@@ -46,5 +58,24 @@ public class TranslatorModel {
         }
     }
 
+    public void setFromCountryCode(CountryCode code) {
+        this.mFromCountryCode = code;
+    }
+
+    public CountryCode getFromCountryCode() {
+        return this.mFromCountryCode;
+    }
+
+    public void setToCountryCode(CountryCode code) {
+        this.mToCountryCode = code;
+    }
+
+    public CountryCode getToCountryCode() {
+        return this.mToCountryCode;
+    }
+
+    public String getTranslationLangs() {
+        return getFromCountryCode() + "-" + getToCountryCode();
+    }
 
 }

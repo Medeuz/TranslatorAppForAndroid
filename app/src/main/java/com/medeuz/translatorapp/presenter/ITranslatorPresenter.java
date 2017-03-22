@@ -19,4 +19,9 @@ public interface ITranslatorPresenter {
      */
     void pronounceText(String countryCode, String text);
 
+    /**
+     * Toggle language translation
+     */
+    void toggleLanguage();
+
 }

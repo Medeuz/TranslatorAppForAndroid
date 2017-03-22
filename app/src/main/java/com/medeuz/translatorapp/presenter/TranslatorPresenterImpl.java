@@ -76,4 +76,9 @@ public class TranslatorPresenterImpl implements ITranslatorPresenter {
         mModel.vocalizeText(countryCode, text);
     }
 
+    @Override
+    public void toggleLanguage() {
+
+    }
+
 }
