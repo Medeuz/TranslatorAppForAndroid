@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.medeuz.translatorapp.R;
 import com.medeuz.translatorapp.presenter.ITranslatorPresenter;
 import com.medeuz.translatorapp.presenter.TranslatorPresenterImpl;
+import com.medeuz.translatorapp.utils.Utils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -102,7 +103,7 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
 
     private void setListeners() {
         mTranslateBtn.setOnClickListener(view ->
-                mTranslatorPresenter.getTranslate("ru-en", mTranslateInputEt.getText().toString())
+                mTranslatorPresenter.getTranslate(mTranslateInputEt.getText().toString())
         );
         mPronounceBtn.setOnClickListener(view ->
                 mTranslatorPresenter.pronounceText("ru", mTranslateInputEt.getText().toString())
@@ -113,11 +114,9 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
                     mTranslatedTextTv.setText("");
                 }
         );
-        mActionBarLanguageBtn.setOnClickListener(view -> {
-            CharSequence temp = mActionBarFromLangTv.getText();
-            mActionBarFromLangTv.setText(mActionBarToLangTv.getText());
-            mActionBarToLangTv.setText(temp);
-        });
+        mActionBarLanguageBtn.setOnClickListener(view ->
+            mTranslatorPresenter.toggleLanguage()
+        );
     }
 
     /**
@@ -138,6 +137,13 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
                     = (TextView) actionBar.getCustomView()
                     .findViewById(R.id.translate_to_language_tv);
         }
+    }
+
+    @Override
+    public void toggleLanguage(Utils.CountryCode fromLang, Utils.CountryCode toLang) {
+        CharSequence temp = mActionBarFromLangTv.getText();
+        mActionBarFromLangTv.setText(mActionBarToLangTv.getText());
+        mActionBarToLangTv.setText(temp);
     }
 
     @Override

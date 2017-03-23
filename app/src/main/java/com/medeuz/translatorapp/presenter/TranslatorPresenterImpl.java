@@ -8,6 +8,7 @@ import com.medeuz.translatorapp.entity.Translate;
 import com.medeuz.translatorapp.model.TranslatorModel;
 import com.medeuz.translatorapp.network.ServiceGenerator;
 import com.medeuz.translatorapp.network.YaTranslateService;
+import com.medeuz.translatorapp.utils.Utils;
 import com.medeuz.translatorapp.view.ITranslatorView;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -40,10 +41,11 @@ public class TranslatorPresenterImpl implements ITranslatorPresenter {
     }
 
     @Override
-    public void getTranslate(String lang, String text) {
-
+    public void getTranslate(String text) {
         mView.showTranslationLoading();
-        Observable<Translate> translateObservable = mYaTranslateService.getTranslate(lang, text);
+
+        String langs = mModel.getTranslationLangs();
+        Observable<Translate> translateObservable = mYaTranslateService.getTranslate(langs, text);
         translateObservable
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -78,7 +80,10 @@ public class TranslatorPresenterImpl implements ITranslatorPresenter {
 
     @Override
     public void toggleLanguage() {
-
+        Utils.CountryCode temp = mModel.getFromCountryCode();
+        mModel.setFromCountryCode(mModel.getToCountryCode());
+        mModel.setToCountryCode(temp);
+        mView.toggleLanguage(mModel.getFromCountryCode(), mModel.getToCountryCode());
     }
 
 }

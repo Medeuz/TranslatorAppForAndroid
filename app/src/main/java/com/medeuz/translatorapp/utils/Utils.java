@@ -13,6 +13,11 @@ public class Utils {
         CountryCode(String countryCode) {
             this.countryCode = countryCode;
         }
+
+        @Override
+        public String toString() {
+            return countryCode;
+        }
     }
 
 }

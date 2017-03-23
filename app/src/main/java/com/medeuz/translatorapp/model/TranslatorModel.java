@@ -2,6 +2,8 @@ package com.medeuz.translatorapp.model;
 
 import android.content.Context;
 
+import com.medeuz.translatorapp.utils.Utils;
+
 import ru.yandex.speechkit.SpeechKit;
 import ru.yandex.speechkit.Vocalizer;
 
@@ -33,6 +35,8 @@ public class TranslatorModel {
 
     public TranslatorModel(Context context) {
         SpeechKit.getInstance().configure(context.getApplicationContext(), SPEECH_API_KEY);
+        setFromCountryCode(CountryCode.RU);
+        setToCountryCode(CountryCode.EN);
     }
 
     /**

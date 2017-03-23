@@ -6,10 +6,9 @@ public interface ITranslatorPresenter {
     /**
      * Get translation of passed text
      *
-     * @param lang codes of text and translation (ru-en for example)
      * @param text text for translation
      */
-    void getTranslate(String lang, String text);
+    void getTranslate(String text);
 
     /**
      * Pronounce passed text with SpeechKit
