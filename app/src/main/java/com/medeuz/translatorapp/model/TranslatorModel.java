@@ -45,9 +45,9 @@ public class TranslatorModel {
      * @param countryCode of passed text
      * @param text that would be pronounced
      */
-    public void vocalizeText(String countryCode, String text) {
+    public void vocalizeText(CountryCode countryCode, String text) {
         resetVocalizer();
-        mVocalizer = Vocalizer.createVocalizer(countryCode, text, true);
+        mVocalizer = Vocalizer.createVocalizer(countryCode.toString(), text, true);
         //ToDo set listener to Vocalizer and handle it in Presenter
         mVocalizer.start();
     }

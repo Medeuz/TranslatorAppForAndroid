@@ -106,7 +106,7 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
                 mTranslatorPresenter.getTranslate(mTranslateInputEt.getText().toString())
         );
         mPronounceBtn.setOnClickListener(view ->
-                mTranslatorPresenter.pronounceText("ru", mTranslateInputEt.getText().toString())
+                mTranslatorPresenter.pronounceText(mTranslateInputEt.getText().toString())
         );
         mClearTextBtn.setOnClickListener(view ->
                 {

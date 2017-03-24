@@ -47,8 +47,9 @@ dependencies {
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile 'io.reactivex.rxjava2:rxjava:2.0.6'
 
-    compile 'com.yandex.android:speechkit:2.5.0'
-
+    compile 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
     compile 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+
+    compile 'com.yandex.android:speechkit:2.5.0'
 }

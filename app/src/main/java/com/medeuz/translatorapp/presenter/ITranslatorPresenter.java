@@ -13,10 +13,9 @@ public interface ITranslatorPresenter {
     /**
      * Pronounce passed text with SpeechKit
      *
-     * @param countryCode of passed text (ru for example)
      * @param text for pronouncing
      */
-    void pronounceText(String countryCode, String text);
+    void pronounceText(String text);
 
     /**
      * Toggle language translation
