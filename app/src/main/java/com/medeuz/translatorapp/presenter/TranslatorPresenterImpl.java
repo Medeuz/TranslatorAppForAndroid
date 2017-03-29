@@ -74,8 +74,13 @@ public class TranslatorPresenterImpl implements ITranslatorPresenter {
     }
 
     @Override
-    public void pronounceText(String text) {
+    public void pronounceNotTranslatedText(String text) {
         mModel.vocalizeText(mModel.getFromCountryCode(), text);
+    }
+
+    @Override
+    public void pronounceTranslatedText(String text) {
+        mModel.vocalizeText(mModel.getToCountryCode(), text);
     }
 
     @Override

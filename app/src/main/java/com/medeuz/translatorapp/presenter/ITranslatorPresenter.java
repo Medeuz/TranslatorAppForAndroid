@@ -11,11 +11,18 @@ public interface ITranslatorPresenter {
     void getTranslate(String text);
 
     /**
-     * Pronounce passed text with SpeechKit
+     * Pronounce passed text with SpeechKit in original language
      *
      * @param text for pronouncing
      */
-    void pronounceText(String text);
+    void pronounceNotTranslatedText(String text);
+
+    /**
+     * Pronounce passed text with SpeechKit in language of translation
+     *
+     * @param text for pronouncing
+     */
+    void pronounceTranslatedText(String text);
 
     /**
      * Toggle language translation

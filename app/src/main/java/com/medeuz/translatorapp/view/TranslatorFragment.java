@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +55,12 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
     ImageButton mPronounceBtn;
 
     /**
+     * Button for pronouncing translated text
+     */
+    @BindView(R.id.pronounce_translated_btn)
+    ImageButton mPronounceTranslatedBtn;
+
+    /**
      * Button to clear EditText mTranslateInputEt
      */
     @BindView(R.id.clear_input_txt_btn)
@@ -64,6 +71,9 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
      */
     @BindView(R.id.translated_text_tv)
     TextView mTranslatedTextTv;
+
+    @BindView(R.id.translation_load_pb)
+    ProgressBar mTranslationLoadPb;
 
     /**
      * ImageButton for language translation change in ActionBar
@@ -102,18 +112,20 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
     }
 
     private void setListeners() {
-        mTranslateBtn.setOnClickListener(view ->
-                mTranslatorPresenter.getTranslate(mTranslateInputEt.getText().toString())
-        );
+        mTranslateBtn.setOnClickListener(view -> {
+                    mTranslatedTextTv.setText("");
+                    mTranslatorPresenter.getTranslate(mTranslateInputEt.getText().toString());
+                });
         mPronounceBtn.setOnClickListener(view ->
-                mTranslatorPresenter.pronounceText(mTranslateInputEt.getText().toString())
+                mTranslatorPresenter.pronounceNotTranslatedText(mTranslateInputEt.getText().toString())
         );
-        mClearTextBtn.setOnClickListener(view ->
-                {
+        mPronounceTranslatedBtn.setOnClickListener(view ->
+                mTranslatorPresenter.pronounceTranslatedText(mTranslatedTextTv.getText().toString())
+        );
+        mClearTextBtn.setOnClickListener(view -> {
                     mTranslateInputEt.setText("");
                     mTranslatedTextTv.setText("");
-                }
-        );
+                });
         mActionBarLanguageBtn.setOnClickListener(view ->
             mTranslatorPresenter.toggleLanguage()
         );
@@ -153,12 +165,12 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
 
     @Override
     public void showTranslationLoading() {
-
+        mTranslationLoadPb.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideTranslationLoading() {
-
+        mTranslationLoadPb.setVisibility(View.GONE);
     }
 
     @Override
