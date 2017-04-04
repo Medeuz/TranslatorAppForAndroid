@@ -67,6 +67,7 @@ public class TranslatorPresenterImpl implements ITranslatorPresenter {
                     @Override
                     public void onNext(Translate translate) {
                         mView.showTranslate(text, translate.getTranslatation().get(0));
+                        mModel.setTranslate(translate);
 
                         Log.d(TAG, translate.getTranslatation().get(0));
                     }
@@ -89,6 +90,11 @@ public class TranslatorPresenterImpl implements ITranslatorPresenter {
         mModel.setFromCountryCode(mModel.getToCountryCode());
         mModel.setToCountryCode(temp);
         mView.toggleLanguage(mModel.getFromCountryCode(), mModel.getToCountryCode());
+    }
+
+    @Override
+    public void addTranslationToFavorite() {
+        mModel.getTranslate().setToFavorite(true);
     }
 
 }

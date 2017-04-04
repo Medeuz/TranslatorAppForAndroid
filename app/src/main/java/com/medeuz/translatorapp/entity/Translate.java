@@ -5,7 +5,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Translate {
+import io.realm.RealmModel;
+
+public class Translate implements RealmModel {
 
     /**
      * Country code of languages (xx-xx)
@@ -19,9 +21,15 @@ public class Translate {
     @SerializedName("text")
     private List<String> mTranslatation;
 
-    public Translate(String lang, List<String> translatation) {
+    /**
+     * Is translation in favorites list
+     */
+    private boolean isFavorite;
+
+    public Translate(String lang, List<String> translation) {
         this.mLanguagesCountryCode = lang;
-        this.mTranslatation = translatation;
+        this.mTranslatation = translation;
+        this.isFavorite = false;
     }
 
     /**
@@ -40,6 +48,24 @@ public class Translate {
      */
     public List<String> getTranslatation() {
         return mTranslatation;
+    }
+
+    /**
+     * Retrieves flag is translation in Favorite list
+     *
+     * @return boolean isFavorite flag
+     */
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    /**
+     * Sets boolean favorite flag
+     *
+     * @param favorite boolean flag is translation in favorite list
+     */
+    public void setToFavorite(boolean favorite) {
+        this.isFavorite = favorite;
     }
 
 }

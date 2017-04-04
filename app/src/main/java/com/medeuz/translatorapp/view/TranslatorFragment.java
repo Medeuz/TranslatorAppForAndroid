@@ -72,8 +72,17 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
     @BindView(R.id.translated_text_tv)
     TextView mTranslatedTextTv;
 
+    /**
+     * ProgressBar to show that translation loading
+     */
     @BindView(R.id.translation_load_pb)
     ProgressBar mTranslationLoadPb;
+
+    /**
+     * Button to add translation to favorites list
+     */
+    @BindView(R.id.add_to_favourite_btn)
+    ImageButton mAddTraslationToFavorite;
 
     /**
      * ImageButton for language translation change in ActionBar
@@ -99,6 +108,7 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
         mTranslatorPresenter = new TranslatorPresenterImpl(getActivity(), this);
 
         mUnbinder = ButterKnife.bind(this, root);
+
         initActionBar();
         setListeners();
 
@@ -128,6 +138,9 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
                 });
         mActionBarLanguageBtn.setOnClickListener(view ->
             mTranslatorPresenter.toggleLanguage()
+        );
+        mAddTraslationToFavorite.setOnClickListener(view ->
+            mTranslatorPresenter.addTranslationToFavorite()
         );
     }
 

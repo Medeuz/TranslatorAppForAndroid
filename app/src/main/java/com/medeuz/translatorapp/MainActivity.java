@@ -6,6 +6,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 
+import com.medeuz.translatorapp.view.HistoryFragment;
 import com.medeuz.translatorapp.view.TranslatorFragment;
 
 public class MainActivity extends Activity {
@@ -14,7 +15,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setCurrentFragment(new TranslatorFragment(), false);
+        //setCurrentFragment(new TranslatorFragment(), false);
+        setCurrentFragment(new HistoryFragment(), false);
     }
 
     public void setCurrentFragment(Fragment fragment, boolean addToBackStack) {
