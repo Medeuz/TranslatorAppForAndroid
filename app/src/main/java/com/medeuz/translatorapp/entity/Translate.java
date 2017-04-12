@@ -5,9 +5,17 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import io.realm.RealmModel;
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-public class Translate implements RealmModel {
+public class Translate extends RealmObject {
+
+    /**
+     * Not translated text, original
+     */
+    @PrimaryKey
+    private String mOriginalText;
 
     /**
      * Country code of languages (xx-xx)
@@ -19,18 +27,12 @@ public class Translate implements RealmModel {
      * Text of translation
      */
     @SerializedName("text")
-    private List<String> mTranslatation;
+    private RealmList<RealmString> mTranslatation;
 
     /**
      * Is translation in favorites list
      */
     private boolean isFavorite;
-
-    public Translate(String lang, List<String> translation) {
-        this.mLanguagesCountryCode = lang;
-        this.mTranslatation = translation;
-        this.isFavorite = false;
-    }
 
     /**
      * Retrieves country code of languages
@@ -46,7 +48,7 @@ public class Translate implements RealmModel {
      *
      * @return String or null
      */
-    public List<String> getTranslatation() {
+    public List<RealmString> getTranslatation() {
         return mTranslatation;
     }
 
@@ -66,6 +68,14 @@ public class Translate implements RealmModel {
      */
     public void setToFavorite(boolean favorite) {
         this.isFavorite = favorite;
+    }
+
+    public void setOriginalText(String originalText) {
+        this.mOriginalText = originalText;
+    }
+
+    public String getOriginalText() {
+        return this.mOriginalText;
     }
 
 }

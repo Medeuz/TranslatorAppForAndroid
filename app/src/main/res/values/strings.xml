@@ -3,4 +3,5 @@
     <string name="text_for_translate">Введите текст для перевода</string>
     <string name="russian">Русский</string>
     <string name="english">Английский</string>
+    <string name="search_in_history">Найти в истории</string>
 </resources>

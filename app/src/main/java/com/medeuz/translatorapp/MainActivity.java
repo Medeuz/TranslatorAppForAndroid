@@ -9,14 +9,17 @@ import android.os.Bundle;
 import com.medeuz.translatorapp.view.HistoryFragment;
 import com.medeuz.translatorapp.view.TranslatorFragment;
 
+import io.realm.Realm;
+
 public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Realm.init(this);
         setContentView(R.layout.activity_main);
-        //setCurrentFragment(new TranslatorFragment(), false);
-        setCurrentFragment(new HistoryFragment(), false);
+        setCurrentFragment(new TranslatorFragment(), false);
+        //setCurrentFragment(new HistoryFragment(), false);
     }
 
     public void setCurrentFragment(Fragment fragment, boolean addToBackStack) {

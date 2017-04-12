@@ -31,6 +31,13 @@ public interface ITranslatorView {
      */
     void hideTranslationLoading();
 
+    /**
+     * Shows passed error in UI
+     *
+     * @param e raised error object
+     */
     void showError(Throwable e);
+
+    void toggleFavorite(boolean isFavorite);
 
 }

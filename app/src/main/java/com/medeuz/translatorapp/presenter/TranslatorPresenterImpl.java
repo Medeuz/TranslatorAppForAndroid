@@ -1,6 +1,5 @@
 package com.medeuz.translatorapp.presenter;
 
-
 import android.content.Context;
 import android.util.Log;
 
@@ -15,6 +14,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.Observable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
+import io.realm.Realm;
 
 public class TranslatorPresenterImpl implements ITranslatorPresenter {
 
@@ -66,12 +66,28 @@ public class TranslatorPresenterImpl implements ITranslatorPresenter {
 
                     @Override
                     public void onNext(Translate translate) {
-                        mView.showTranslate(text, translate.getTranslatation().get(0));
+                        mView.showTranslate(text, translate.getTranslatation().get(0).toString());
+                        mView.toggleFavorite(translate.isFavorite());
+                        translate.setOriginalText(text);
+                        saveTranslationToRealm(translate);
                         mModel.setTranslate(translate);
 
-                        Log.d(TAG, translate.getTranslatation().get(0));
+                        Log.d(TAG, translate.getTranslatation().get(0).toString());
                     }
                 });
+    }
+
+    /**
+     * Save translate object into Realm database
+     *
+     * @param translate object
+     */
+    private void saveTranslationToRealm(Translate translate) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(translate);
+        realm.commitTransaction();
+        realm.close();
     }
 
     @Override
@@ -93,8 +109,11 @@ public class TranslatorPresenterImpl implements ITranslatorPresenter {
     }
 
     @Override
-    public void addTranslationToFavorite() {
-        mModel.getTranslate().setToFavorite(true);
+    public void switchTranslationInFavorite() {
+        boolean isFavorite = !mModel.getTranslate().isFavorite();
+        mModel.getTranslate().setToFavorite(isFavorite);
+        saveTranslationToRealm(mModel.getTranslate());
+        mView.toggleFavorite(isFavorite);
     }
 
 }

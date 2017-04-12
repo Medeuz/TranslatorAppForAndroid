@@ -81,8 +81,8 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
     /**
      * Button to add translation to favorites list
      */
-    @BindView(R.id.add_to_favourite_btn)
-    ImageButton mAddTraslationToFavorite;
+    @BindView(R.id.switch_in_favorite_btn)
+    ImageButton mSwitchTranslationInFavorite;
 
     /**
      * ImageButton for language translation change in ActionBar
@@ -139,8 +139,8 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
         mActionBarLanguageBtn.setOnClickListener(view ->
             mTranslatorPresenter.toggleLanguage()
         );
-        mAddTraslationToFavorite.setOnClickListener(view ->
-            mTranslatorPresenter.addTranslationToFavorite()
+        mSwitchTranslationInFavorite.setOnClickListener(view ->
+            mTranslatorPresenter.switchTranslationInFavorite()
         );
     }
 
@@ -166,6 +166,7 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
 
     @Override
     public void toggleLanguage(Utils.CountryCode fromLang, Utils.CountryCode toLang) {
+        //ToDo animate switch
         CharSequence temp = mActionBarFromLangTv.getText();
         mActionBarFromLangTv.setText(mActionBarToLangTv.getText());
         mActionBarToLangTv.setText(temp);
@@ -178,17 +179,33 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
 
     @Override
     public void showTranslationLoading() {
+        //ToDo animate this shit
         mTranslationLoadPb.setVisibility(View.VISIBLE);
+        mPronounceTranslatedBtn.setVisibility(View.GONE);
+        mSwitchTranslationInFavorite.setVisibility(View.GONE);
     }
 
     @Override
     public void hideTranslationLoading() {
+        //ToDo animate this shit
         mTranslationLoadPb.setVisibility(View.GONE);
+        mPronounceTranslatedBtn.setVisibility(View.VISIBLE);
+        mSwitchTranslationInFavorite.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showError(Throwable e) {
         Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void toggleFavorite(boolean isFavorite) {
+        //ToDo animate switch
+        if (isFavorite) {
+            mSwitchTranslationInFavorite.setImageResource(R.drawable.ic_favorite_black_24dp);
+        } else {
+            mSwitchTranslationInFavorite.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+        }
     }
 
 }

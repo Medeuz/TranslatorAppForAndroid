@@ -29,6 +29,9 @@ public interface ITranslatorPresenter {
      */
     void toggleLanguage();
 
-    void addTranslationToFavorite();
+    /**
+     * Adds translation to favorite list
+     */
+    void switchTranslationInFavorite();
 
 }

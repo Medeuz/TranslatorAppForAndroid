@@ -1,5 +1,11 @@
 package com.medeuz.translatorapp.network;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.medeuz.translatorapp.entity.RealmString;
+import com.medeuz.translatorapp.utils.RealmListDeserializer;
+
+import io.realm.RealmList;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -38,7 +44,11 @@ public class ServiceGenerator {
             new Retrofit.Builder()
                     .baseUrl(TRANSLATE_API_BASE_URL)
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create());
+                    .addConverterFactory(GsonConverterFactory.create(
+                            new GsonBuilder()
+                                .registerTypeAdapter(RealmList.class, new RealmListDeserializer())
+                                .create())
+                    );
 
     public static <S> S createService(Class<S> serviceClass) {
         Retrofit retrofit = builder.client(httpClient.build()).build();
