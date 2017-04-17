@@ -4,4 +4,7 @@
     <string name="russian">Русский</string>
     <string name="english">Английский</string>
     <string name="search_in_history">Найти в истории</string>
+    <string name="translate">Переводчик</string>
+    <string name="history">История</string>
+    <string name="favorite">Избранное</string>
 </resources>

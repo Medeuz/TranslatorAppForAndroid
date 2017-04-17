@@ -105,6 +105,12 @@ public class TranslatorPresenterImpl implements ITranslatorPresenter {
         }
     }
 
+    /**
+     * Returns cached translation of text or null
+     *
+     * @param text to be translated
+     * @return Translate object or null
+     */
     private Translate getCachedTranslate(String text) {
         return mRealm.where(Translate.class)
                 .equalTo("mOriginalText", text)

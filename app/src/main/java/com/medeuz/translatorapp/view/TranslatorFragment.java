@@ -28,6 +28,11 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
     public static final String TAG = "TranslatorFragment";
 
     /**
+     * Extra argument for passing title of fragment
+     */
+    public static final String EXTRA_FRAGMENT_TITLE = "com.medeuz.translatorapp.extra.FRAGMENT_TITLE";
+
+    /**
      * Presenter of Translator screen, see ITranslatorPresenter interface
      */
     private ITranslatorPresenter mTranslatorPresenter;
@@ -99,6 +104,22 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
      */
     private TextView mActionBarToLangTv;
 
+    public static TranslatorFragment newInstance(String title) {
+        TranslatorFragment fragment = new TranslatorFragment();
+        Bundle args = new Bundle();
+        args.putString(EXTRA_FRAGMENT_TITLE, title);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+
+        }
+    }
 
     @Nullable
     @Override
@@ -113,6 +134,22 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
         setListeners();
 
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mTranslatorPresenter != null) {
+            mTranslatorPresenter.onResume();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mTranslatorPresenter != null) {
+            mTranslatorPresenter.onPause();
+        }
     }
 
     @Override

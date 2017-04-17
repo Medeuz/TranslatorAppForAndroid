@@ -2,9 +2,13 @@ package com.medeuz.translatorapp.adapter;
 
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
+import com.medeuz.translatorapp.R;
 import com.medeuz.translatorapp.entity.Translate;
 
 import io.realm.OrderedRealmCollection;
@@ -18,18 +22,59 @@ public class TranslateAdapter extends RealmRecyclerViewAdapter<Translate, Transl
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        return new TranslateAdapter.ViewHolder(inflater.inflate(R.layout.translate_list_item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
+        Translate translate = getItem(position);
+        if (translate != null) {
+            holder.originalTextTv.setText(translate.getOriginalText());
+            holder.translateTextTv.setText(translate.getTranslatation().get(0).toString());
+            holder.languagesCountryCodesTv.setText(translate.getLanguagesCountryCode());
+            if (translate.isFavorite()) {
+                holder.favoriteBtn.setImageResource(R.drawable.ic_favorite_black_24dp);
+            } else {
+                holder.favoriteBtn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            }
+        }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(View itemView) {
+        /**
+         * Button for switching is translation in favorite list
+         */
+        ImageButton favoriteBtn;
+
+        /**
+         * Button for remove translation from history/cache
+         */
+        ImageButton deleteBtn;
+
+        /**
+         * TextView for original text which was translated
+         */
+        TextView originalTextTv;
+
+        /**
+         * TextView for translated text
+         */
+        TextView translateTextTv;
+
+        /**
+         * TextView for country codex fo translatiov (ru-en, en-ru)
+         */
+        TextView languagesCountryCodesTv;
+
+        ViewHolder(View itemView) {
             super(itemView);
+            favoriteBtn = (ImageButton) itemView.findViewById(R.id.favorite_btn);
+            deleteBtn = (ImageButton) itemView.findViewById(R.id.delete_btn);
+            originalTextTv = (TextView) itemView.findViewById(R.id.original_text_tv);
+            translateTextTv = (TextView) itemView.findViewById(R.id.translated_text_tv);
+            languagesCountryCodesTv = (TextView) itemView.findViewById(R.id.langs_tv);
         }
     }
 
