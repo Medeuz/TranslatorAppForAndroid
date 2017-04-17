@@ -5,6 +5,7 @@ import android.content.Context;
 import com.medeuz.translatorapp.entity.Translate;
 import com.medeuz.translatorapp.utils.Utils;
 
+import io.realm.Realm;
 import ru.yandex.speechkit.SpeechKit;
 import ru.yandex.speechkit.Vocalizer;
 

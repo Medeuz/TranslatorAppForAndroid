@@ -34,4 +34,11 @@ public interface ITranslatorPresenter {
      */
     void switchTranslationInFavorite();
 
+    /**
+     * Needed mostly for Realm close/open
+     */
+    void onResume();
+
+    void onPause();
+
 }

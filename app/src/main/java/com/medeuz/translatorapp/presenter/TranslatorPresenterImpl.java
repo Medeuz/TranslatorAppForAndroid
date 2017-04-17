@@ -35,14 +35,29 @@ public class TranslatorPresenterImpl implements ITranslatorPresenter {
      */
     private TranslatorModel mModel;
 
+    /**
+     * Realm instance to restore and save translations
+     */
+    private Realm mRealm;
+
     public TranslatorPresenterImpl(Context context, ITranslatorView view) {
         this.mView = view;
         this.mModel = new TranslatorModel(context);
+        mRealm = Realm.getDefaultInstance();
     }
 
     @Override
     public void getTranslate(String text) {
         mView.showTranslationLoading();
+
+        Translate translate = getCachedTranslate(text);
+        if (translate != null) {
+            mModel.setTranslate(translate);
+            mView.showTranslate(text, translate.getTranslatation().get(0).toString());
+            mView.toggleFavorite(translate.isFavorite());
+            mView.hideTranslationLoading();
+            return;
+        }
 
         String langs = mModel.getTranslationLangs();
         Observable<Translate> translateObservable = mYaTranslateService.getTranslate(langs, text);
@@ -83,11 +98,17 @@ public class TranslatorPresenterImpl implements ITranslatorPresenter {
      * @param translate object
      */
     private void saveTranslationToRealm(Translate translate) {
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(translate);
-        realm.commitTransaction();
-        realm.close();
+        if (!translate.isManaged()) {
+            mRealm.beginTransaction();
+            mRealm.copyToRealmOrUpdate(translate);
+            mRealm.commitTransaction();
+        }
+    }
+
+    private Translate getCachedTranslate(String text) {
+        return mRealm.where(Translate.class)
+                .equalTo("mOriginalText", text)
+                .findFirst();
     }
 
     @Override
@@ -111,9 +132,23 @@ public class TranslatorPresenterImpl implements ITranslatorPresenter {
     @Override
     public void switchTranslationInFavorite() {
         boolean isFavorite = !mModel.getTranslate().isFavorite();
+        mRealm.beginTransaction();
         mModel.getTranslate().setToFavorite(isFavorite);
+        mRealm.commitTransaction();
         saveTranslationToRealm(mModel.getTranslate());
         mView.toggleFavorite(isFavorite);
+    }
+
+    @Override
+    public void onResume() {
+        if (mRealm.isClosed()) {
+            mRealm = Realm.getDefaultInstance();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        mRealm.close();
     }
 
 }
