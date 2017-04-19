@@ -1,7 +1,5 @@
 package com.medeuz.translatorapp.view;
 
-
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -92,17 +90,20 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
     /**
      * ImageButton for language translation change in ActionBar
      */
-    private ImageButton mActionBarLanguageBtn;
+    @BindView(R.id.lang_change_btn)
+    ImageButton mActionBarLanguageBtn;
 
     /**
      * TextView for language name for translation
      */
-    private TextView mActionBarFromLangTv;
+    @BindView(R.id.translate_from_language_tv)
+    TextView mActionBarFromLangTv;
 
     /**
      * TextView for language name for translated result
      */
-    private TextView mActionBarToLangTv;
+    @BindView(R.id.translate_to_language_tv)
+    TextView mActionBarToLangTv;
 
     public static TranslatorFragment newInstance(String title) {
         TranslatorFragment fragment = new TranslatorFragment();
@@ -130,7 +131,6 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
 
         mUnbinder = ButterKnife.bind(this, root);
 
-        initActionBar();
         setListeners();
 
         return root;
@@ -179,26 +179,6 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
         mSwitchTranslationInFavorite.setOnClickListener(view ->
             mTranslatorPresenter.switchTranslationInFavorite()
         );
-    }
-
-    /**
-     * Sets ActionBar custom view with button to change languages
-     */
-    private void initActionBar() {
-        ActionBar actionBar = getActivity().getActionBar();
-        if (actionBar != null) {
-            actionBar.setCustomView(R.layout.translator_toolbar);
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-            mActionBarLanguageBtn
-                    = (ImageButton) actionBar.getCustomView()
-                    .findViewById(R.id.lang_change_btn);
-            mActionBarFromLangTv
-                    = (TextView) actionBar.getCustomView()
-                    .findViewById(R.id.translate_from_language_tv);
-            mActionBarToLangTv
-                    = (TextView) actionBar.getCustomView()
-                    .findViewById(R.id.translate_to_language_tv);
-        }
     }
 
     @Override

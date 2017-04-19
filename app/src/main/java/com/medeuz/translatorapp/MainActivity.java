@@ -1,13 +1,9 @@
 package com.medeuz.translatorapp;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
 
@@ -24,14 +20,26 @@ public class MainActivity extends Activity
         implements BottomNavigationView.OnNavigationItemSelectedListener,
         ViewPager.OnPageChangeListener {
 
+    /**
+     * View of view pager where located fragments with content
+     */
     @BindView(R.id.pager)
     ViewPager mViewPager;
 
+    /**
+     * View of Bottom Navigation
+     */
     @BindView(R.id.bottom_navigation)
     BottomNavigationView mBottomNavigationView;
 
+    /**
+     * Unbinder for views
+     */
     private Unbinder mUnbinder;
 
+    /**
+     * Previous selected item in bottom navigation
+     */
     private MenuItem prevMenuItem;
 
     @Override
@@ -42,9 +50,9 @@ public class MainActivity extends Activity
         mUnbinder = ButterKnife.bind(this);
 
         FragmentsAdapter adapter = new FragmentsAdapter(getFragmentManager());
-        adapter.addFragment(TranslatorFragment.newInstance("1"));
-        adapter.addFragment(HistoryFragment.newInstance("2", false));
-        adapter.addFragment(HistoryFragment.newInstance("3", true));
+        adapter.addFragment(TranslatorFragment.newInstance(getString(R.string.translate)));
+        adapter.addFragment(HistoryFragment.newInstance(getString(R.string.history), false));
+        adapter.addFragment(HistoryFragment.newInstance(getString(R.string.favorite), true));
 
         mViewPager.setAdapter(adapter);
         mViewPager.addOnPageChangeListener(this);
@@ -86,8 +94,7 @@ public class MainActivity extends Activity
         if (prevMenuItem != null) {
             prevMenuItem.setChecked(false);
         }
-        else
-        {
+        else {
             mBottomNavigationView.getMenu().getItem(0).setChecked(false);
         }
 

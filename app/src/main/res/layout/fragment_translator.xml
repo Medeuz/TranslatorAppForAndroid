@@ -4,8 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include layout="@layout/translator_toolbar"
+        android:id="@+id/translator_toolbar" />
+
     <LinearLayout
         android:id="@+id/translation_container"
+        android:layout_below="@id/translator_toolbar"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="200dp">
@@ -61,6 +68,8 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_below="@id/translation_container">
         <TextView
             android:id="@+id/translated_text_tv"

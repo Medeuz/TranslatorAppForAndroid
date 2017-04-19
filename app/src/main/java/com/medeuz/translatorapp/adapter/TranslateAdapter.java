@@ -16,6 +16,16 @@ import io.realm.RealmRecyclerViewAdapter;
 
 public class TranslateAdapter extends RealmRecyclerViewAdapter<Translate, TranslateAdapter.ViewHolder> {
 
+    /**
+     * Listener for Delete button click
+     */
+    private OnItemClickListener onDeleteClickListener;
+
+    /**
+     * Listener for Favorite button click
+     */
+    private OnItemClickListener onFavoriteClickListener;
+
     public TranslateAdapter(@Nullable OrderedRealmCollection<Translate> data, boolean autoUpdate) {
         super(data, autoUpdate);
     }
@@ -41,6 +51,24 @@ public class TranslateAdapter extends RealmRecyclerViewAdapter<Translate, Transl
         }
     }
 
+    /**
+     * Setter for OnDeleteClickListener
+     *
+     * @param listener implementation of OnItemClickListener
+     */
+    public void setOnDeleteClickListener(OnItemClickListener listener) {
+        this.onDeleteClickListener = listener;
+    }
+
+    /**
+     * Setter for OnFavoriteClickListener
+     *
+     * @param listener implementation of OnItemClickListener
+     */
+    public void setOnFavoriteClickListener(OnItemClickListener listener) {
+        this.onFavoriteClickListener = listener;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         /**
@@ -64,7 +92,7 @@ public class TranslateAdapter extends RealmRecyclerViewAdapter<Translate, Transl
         TextView translateTextTv;
 
         /**
-         * TextView for country codex fo translatiov (ru-en, en-ru)
+         * TextView for country codex fo translation (ru-en, en-ru)
          */
         TextView languagesCountryCodesTv;
 
@@ -75,6 +103,19 @@ public class TranslateAdapter extends RealmRecyclerViewAdapter<Translate, Transl
             originalTextTv = (TextView) itemView.findViewById(R.id.original_text_tv);
             translateTextTv = (TextView) itemView.findViewById(R.id.translated_text_tv);
             languagesCountryCodesTv = (TextView) itemView.findViewById(R.id.langs_tv);
+
+            deleteBtn.setOnClickListener((v) -> {
+                if (onDeleteClickListener != null) {
+                    onDeleteClickListener.onItemClick(v, getAdapterPosition());
+                }
+            });
+
+            favoriteBtn.setOnClickListener((v) -> {
+                if (onFavoriteClickListener != null) {
+                    onFavoriteClickListener.onItemClick(v, getAdapterPosition());
+                }
+            });
+
         }
     }
 

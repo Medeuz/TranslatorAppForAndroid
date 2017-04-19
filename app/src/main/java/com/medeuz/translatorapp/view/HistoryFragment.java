@@ -8,13 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import com.medeuz.translatorapp.R;
 import com.medeuz.translatorapp.adapter.TranslateAdapter;
 import com.medeuz.translatorapp.entity.Translate;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,9 +31,6 @@ public class HistoryFragment extends Fragment {
      */
     public static final String EXTRA_FRAGMENT_TITLE = "com.medeuz.translatorapp.extra.FRAGMENT_TITLE";
 
-    //    @BindView(R.id.search_et)
-//    EditText searchEt;
-
     @BindView(R.id.history_list_rv)
     RecyclerView historyListRv;
 
@@ -46,6 +40,11 @@ public class HistoryFragment extends Fragment {
      * Flag which shows which list shows fragment, history or favorite
      */
     private boolean isFavoriteList;
+
+    /**
+     * Realm instance to retrieve data from Realm
+     */
+    private Realm mRealm;
 
     /**
      * newInstance constructor for creating fragment with arguments
@@ -64,11 +63,28 @@ public class HistoryFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (mRealm == null) {
+            mRealm = Realm.getDefaultInstance();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (!mRealm.isClosed()) {
+            mRealm.close();
+        }
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             isFavoriteList = getArguments().getBoolean(EXTRA_IS_FAVORITE_LIST, false);
         }
+        mRealm = Realm.getDefaultInstance();
     }
 
     @Nullable
@@ -78,13 +94,12 @@ public class HistoryFragment extends Fragment {
 
         mUnbinder = ButterKnife.bind(this, root);
 
-        Realm realm = Realm.getDefaultInstance();
         RealmResults<Translate> translateList;
 
         if (isFavoriteList) {
-            translateList = realm.where(Translate.class).equalTo("isFavorite", true).findAll();
+            translateList = mRealm.where(Translate.class).equalTo("isFavorite", true).findAll();
         } else {
-            translateList = realm.where(Translate.class).findAll();
+            translateList = mRealm.where(Translate.class).findAll();
         }
 
         TranslateAdapter adapter = new TranslateAdapter(
@@ -94,6 +109,8 @@ public class HistoryFragment extends Fragment {
         historyListRv.setAdapter(adapter);
         historyListRv.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        setListeners(adapter);
+
         return root;
     }
 
@@ -101,6 +118,27 @@ public class HistoryFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         mUnbinder.unbind();
+    }
+
+    private void setListeners(TranslateAdapter adapter) {
+        adapter.setOnDeleteClickListener((view, position) -> {
+            Translate translate = adapter.getItem(position);
+            if (translate != null) {
+                mRealm.beginTransaction();
+                translate.deleteFromRealm();
+                mRealm.commitTransaction();
+            }
+        });
+
+        adapter.setOnFavoriteClickListener((view, position) -> {
+            Translate translate = adapter.getItem(position);
+            if (translate != null) {
+                boolean isFavorite = !translate.isFavorite();
+                mRealm.beginTransaction();
+                translate.setToFavorite(isFavorite);
+                mRealm.commitTransaction();
+            }
+        });
     }
 
 }
