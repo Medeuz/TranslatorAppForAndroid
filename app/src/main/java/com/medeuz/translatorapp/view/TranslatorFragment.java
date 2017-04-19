@@ -1,11 +1,17 @@
 package com.medeuz.translatorapp.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -29,6 +35,8 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
      * Extra argument for passing title of fragment
      */
     public static final String EXTRA_FRAGMENT_TITLE = "com.medeuz.translatorapp.extra.FRAGMENT_TITLE";
+
+    public static final int ANIMATION_DURATION = 500;
 
     /**
      * Presenter of Translator screen, see ITranslatorPresenter interface
@@ -116,10 +124,6 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-
-        }
     }
 
     @Nullable
@@ -162,6 +166,7 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
         mTranslateBtn.setOnClickListener(view -> {
                     mTranslatedTextTv.setText("");
                     mTranslatorPresenter.getTranslate(mTranslateInputEt.getText().toString());
+                    hideKeyboard();
                 });
         mPronounceBtn.setOnClickListener(view ->
                 mTranslatorPresenter.pronounceNotTranslatedText(mTranslateInputEt.getText().toString())
@@ -179,14 +184,90 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
         mSwitchTranslationInFavorite.setOnClickListener(view ->
             mTranslatorPresenter.switchTranslationInFavorite()
         );
+        mTranslateInputEt.setOnFocusChangeListener((view, hasFocus) -> {
+            if (!hasFocus) {
+                hideKeyboard();
+            }
+        });
+    }
+
+    /**
+     * Hides keyboard for Translate Input Text
+     */
+    private void hideKeyboard() {
+        if (getActivity() != null && mTranslateInputEt != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity()
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(mTranslateInputEt.getWindowToken(), 0);
+        }
+    }
+
+    /**
+     * Animate views appearence
+     *
+     * @param showViews list of views which would be shown
+     * @param hideViews list of views which would be hidden
+     */
+    private void viewsCrossFading(View[] showViews, View[] hideViews) {
+        for (View showView : showViews) {
+            // Set the "show" view to 0% opacity but visible, so that it is visible
+            // (but fully transparent) during the animation.
+            showView.setAlpha(0f);
+            showView.setVisibility(View.VISIBLE);
+
+            // Animate the "show" view to 100% opacity, and clear any animation listener set on
+            // the view. Remember that listeners are not limited to the specific animation
+            // describes in the chained method calls. Listeners are set on the
+            // ViewPropertyAnimator object for the view, which persists across several
+            // animations.
+            showView.animate()
+                    .alpha(1f)
+                    .setDuration(ANIMATION_DURATION)
+                    .setListener(null);
+        }
+
+        for (View hideView : hideViews) {
+            // Animate the "hide" view to 0% opacity. After the animation ends, set its visibility
+            // to GONE as an optimization step (it won't participate in layout passes, etc.)
+            hideView.animate()
+                    .alpha(0f)
+                    .setDuration(ANIMATION_DURATION)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            hideView.setVisibility(View.GONE);
+                        }
+                    });
+        }
     }
 
     @Override
     public void toggleLanguage(Utils.CountryCode fromLang, Utils.CountryCode toLang) {
-        //ToDo animate switch
-        CharSequence temp = mActionBarFromLangTv.getText();
-        mActionBarFromLangTv.setText(mActionBarToLangTv.getText());
-        mActionBarToLangTv.setText(temp);
+        AlphaAnimation animation = new AlphaAnimation(1.0f, 0.0f);
+        animation.setDuration(ANIMATION_DURATION);
+        animation.setRepeatCount(1);
+        animation.setRepeatMode(Animation.REVERSE);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                CharSequence temp = mActionBarFromLangTv.getText();
+                mActionBarFromLangTv.setText(mActionBarToLangTv.getText());
+                mActionBarToLangTv.setText(temp);
+            }
+        });
+
+        mActionBarFromLangTv.startAnimation(animation);
+        mActionBarToLangTv.startAnimation(animation);
     }
 
     @Override
@@ -196,7 +277,10 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
 
     @Override
     public void showTranslationLoading() {
-        //ToDo animate this shit
+        viewsCrossFading(
+                new View[]{mTranslationLoadPb},
+                new View[]{mPronounceTranslatedBtn, mSwitchTranslationInFavorite}
+        );
         mTranslationLoadPb.setVisibility(View.VISIBLE);
         mPronounceTranslatedBtn.setVisibility(View.GONE);
         mSwitchTranslationInFavorite.setVisibility(View.GONE);
@@ -204,7 +288,10 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
 
     @Override
     public void hideTranslationLoading() {
-        //ToDo animate this shit
+        viewsCrossFading(
+                new View[]{mPronounceTranslatedBtn, mSwitchTranslationInFavorite},
+                new View[]{mTranslationLoadPb}
+        );
         mTranslationLoadPb.setVisibility(View.GONE);
         mPronounceTranslatedBtn.setVisibility(View.VISIBLE);
         mSwitchTranslationInFavorite.setVisibility(View.VISIBLE);
@@ -217,7 +304,6 @@ public class TranslatorFragment extends Fragment implements ITranslatorView {
 
     @Override
     public void toggleFavorite(boolean isFavorite) {
-        //ToDo animate switch
         if (isFavorite) {
             mSwitchTranslationInFavorite.setImageResource(R.drawable.ic_favorite_black_24dp);
         } else {

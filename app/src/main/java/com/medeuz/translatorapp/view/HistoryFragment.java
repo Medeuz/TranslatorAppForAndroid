@@ -120,6 +120,11 @@ public class HistoryFragment extends Fragment {
         mUnbinder.unbind();
     }
 
+    /**
+     * Sets listeners to buttons, adapters, etc
+     *
+     * @param adapter TranslateAdapter where we setting listeners to clicks
+     */
     private void setListeners(TranslateAdapter adapter) {
         adapter.setOnDeleteClickListener((view, position) -> {
             Translate translate = adapter.getItem(position);

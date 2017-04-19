@@ -42,7 +42,7 @@ public class TranslateAdapter extends RealmRecyclerViewAdapter<Translate, Transl
         if (translate != null) {
             holder.originalTextTv.setText(translate.getOriginalText());
             holder.translateTextTv.setText(translate.getTranslatation().get(0).toString());
-            holder.languagesCountryCodesTv.setText(translate.getLanguagesCountryCode());
+            holder.languagesCountryCodesTv.setText(translate.getLanguagesCountryCode().toUpperCase());
             if (translate.isFavorite()) {
                 holder.favoriteBtn.setImageResource(R.drawable.ic_favorite_black_24dp);
             } else {
