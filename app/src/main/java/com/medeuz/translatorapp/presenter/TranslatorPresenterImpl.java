@@ -83,8 +83,11 @@ public class TranslatorPresenterImpl implements ITranslatorPresenter {
                     public void onNext(Translate translate) {
                         mView.showTranslate(text, translate.getTranslatation().get(0).toString());
                         mView.toggleFavorite(translate.isFavorite());
-                        translate.setOriginalText(text);
-                        saveTranslationToRealm(translate);
+                        //Make saving only if translated and original text is not equal
+                        if (!translate.getTranslatation().get(0).toString().equals(text)) {
+                            translate.setOriginalText(text);
+                            saveTranslationToRealm(translate);
+                        }
                         mModel.setTranslate(translate);
 
                         Log.d(TAG, translate.getTranslatation().get(0).toString());
